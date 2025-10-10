@@ -1,0 +1,14 @@
+services:
+  acme-gateway-go:
+    build: .
+    container_name: acme-gateway-go
+    restart: unless-stopped
+    environment:
+      - ACME_EMAIL=${ACME_EMAIL}
+      - CLOUDFLARE_DNS_API_TOKEN=${CLOUDFLARE_DNS_API_TOKEN}
+      - GATEWAY_TOKEN=${GATEWAY_TOKEN}
+    volumes:
+      - ./data:/app/data
+    ports:
+      - 48952:48952
+    
