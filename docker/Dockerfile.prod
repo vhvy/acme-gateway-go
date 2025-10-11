@@ -13,7 +13,13 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o app .
 FROM alpine:3.22
 
 WORKDIR /app
-RUN apk --no-cache add ca-certificates
+RUN apk update
+RUN apk --no-cache add ca-certificates iptables
 COPY --from=builder /app/app .
 
-ENTRYPOINT ["./app"]
+COPY entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+CMD ["./app"]

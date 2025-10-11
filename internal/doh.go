@@ -12,6 +12,8 @@ import (
 const dohURL = "https://1.1.1.1/dns-query"
 
 func HandleDNS(w dns.ResponseWriter, req *dns.Msg) {
+	// 强制需要递归
+	req.RecursionDesired = true
 	// 将 DNS 请求序列化为 wire format
 	reqBytes, err := req.Pack()
 	if err != nil {
@@ -45,6 +47,8 @@ func HandleDNS(w dns.ResponseWriter, req *dns.Msg) {
 		log.Println("Unpack error:", err)
 		return
 	}
+
+	log.Printf("\n%s\n", dnsResp.String())
 
 	// 返回给客户端
 	w.WriteMsg(dnsResp)

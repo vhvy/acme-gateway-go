@@ -44,7 +44,7 @@ func main() {
 
 	dns.HandleFunc(".", internal.HandleDNS)
 
-	server := &dns.Server{Addr: ":53", Net: "udp"}
-	log.Println("DNS server listening on :53")
+	server := &dns.Server{Addr: ":5353", Net: "udp"}
+	log.Println("DNS server listening on :5353")
 	log.Fatal(server.ListenAndServe())
 }

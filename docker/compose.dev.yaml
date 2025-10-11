@@ -7,9 +7,9 @@ services:
     restart: on-failure
     env_file: ../.env
     volumes:
-      - ./:/app
+      - ../:/app
       - /etc/localtime:/etc/localtime:ro
     ports:
       - 48952:48952
-    dns:
-      - 127.0.0.1
+    cap_add:
+      - NET_ADMIN
