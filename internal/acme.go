@@ -111,8 +111,8 @@ func LoadAccountStore(path string) (*AccountStore, error) {
 func GetLegoClient(user *MyUser) (*lego.Client, error) {
 	config := lego.NewConfig(user)
 
-	// config.CADirURL = "https://acme-v02.api.letsencrypt.org/directory"
-	config.CADirURL = "https://acme-staging-v02.api.letsencrypt.org/directory"
+	config.CADirURL = "https://acme-v02.api.letsencrypt.org/directory"
+	// config.CADirURL = "https://acme-staging-v02.api.letsencrypt.org/directory"
 	config.Certificate.KeyType = certcrypto.RSA2048
 
 	return lego.NewClient(config)
