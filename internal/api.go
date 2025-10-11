@@ -1,7 +1,9 @@
 package internal
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -15,6 +17,11 @@ func AuthMiddleware(gatewayToken string, next http.HandlerFunc) http.HandlerFunc
 		}
 		next.ServeHTTP(w, r)
 	}
+}
+
+type Certs struct {
+	Certificate string `json:"certificate"`
+	PrivateKey  string `json:"private_key"`
 }
 
 func HandleHttp(w http.ResponseWriter, r *http.Request) {
@@ -37,11 +44,18 @@ func HandleHttp(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if outputFormat == "json" {
+		certificatesJSON := Certs{
+			Certificate: string(certificates.Certificate),
+			PrivateKey:  string(certificates.PrivateKey),
+		}
+
 		w.Header().Set("Content-Type", "application/json")
-		w.Write([]byte(fmt.Sprintf(`{
-		"certificate": "%s",
-		"private_key": "%s"
-	}`, certificates.Certificate, certificates.PrivateKey)))
+		err := json.NewEncoder(w).Encode(certificatesJSON)
+		if err != nil {
+			log.Printf("Error encoding JSON response: %v", err)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
 	} else {
 		// 设置下载响应头
 		w.Header().Set("Content-Type", "application/x-pem-file")
