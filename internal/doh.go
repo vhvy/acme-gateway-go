@@ -20,9 +20,14 @@ func HandleDNS(w dns.ResponseWriter, req *dns.Msg) {
 	}
 
 	// 发送到 DoH 上游
-	client := &http.Client{}
+	client := &http.Client{
+		Transport: &http.Transport{
+			DisableKeepAlives: true,
+		},
+	}
 	dohReq, _ := http.NewRequest("POST", dohURL, bytes.NewReader(reqBytes))
 	dohReq.Header.Set("Content-Type", "application/dns-message")
+	dohReq.Header.Set("Cache-Control", "no-cache")
 
 	resp, err := client.Do(dohReq)
 	if err != nil {

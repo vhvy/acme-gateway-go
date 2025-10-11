@@ -1,0 +1,14 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+cmd = "go build -o tmp/main ."
+bin = "tmp/main"
+include_ext = ["go"]
+full_bin = "./tmp/main"
+poll = true
+poll_interval = 2000
+
+[screen]
+clear_on_rebuild = false
+keep_scroll = true

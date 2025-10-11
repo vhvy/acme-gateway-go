@@ -1,9 +1,7 @@
 package main
 
 import (
-	"context"
 	"log"
-	"net"
 	"net/http"
 	"os"
 	"time"
@@ -12,7 +10,6 @@ import (
 	"github.com/vhvy/acme-gateway-go/internal"
 )
 
-const DNSPort = "48953"
 const HTTPPort = "48952"
 
 func main() {
@@ -27,16 +24,6 @@ func main() {
 	}
 	if cfToken == "" {
 		log.Fatal("CF API TOKEN not set")
-	}
-
-	net.DefaultResolver = &net.Resolver{
-		PreferGo: true,
-		Dial: func(ctx context.Context, network, address string) (net.Conn, error) {
-			d := net.Dialer{
-				Timeout: time.Second * 5,
-			}
-			return d.DialContext(ctx, "udp", "127.0.0.1:"+DNSPort)
-		},
 	}
 
 	http.HandleFunc("/renew", internal.AuthMiddleware(gatewayToken, internal.HandleHttp))
@@ -57,7 +44,7 @@ func main() {
 
 	dns.HandleFunc(".", internal.HandleDNS)
 
-	server := &dns.Server{Addr: ":" + DNSPort, Net: "udp"}
-	log.Println("DNS server listening on :" + DNSPort)
+	server := &dns.Server{Addr: ":53", Net: "udp"}
+	log.Println("DNS server listening on :53")
 	log.Fatal(server.ListenAndServe())
 }

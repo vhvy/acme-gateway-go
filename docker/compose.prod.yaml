@@ -1,6 +1,6 @@
 services:
   acme-gateway-go:
-    build: .
+    image: ghcr.io/vhvy/acme-gateway-go:master
     container_name: acme-gateway-go
     restart: unless-stopped
     environment:
@@ -9,6 +9,8 @@ services:
       - GATEWAY_TOKEN=${GATEWAY_TOKEN}
     volumes:
       - ./data:/app/data
+       - /etc/localtime:/etc/localtime:ro
     ports:
       - 48952:48952
-    
+    dns:
+      - 127.0.0.1
